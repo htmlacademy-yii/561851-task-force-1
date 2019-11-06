@@ -12,7 +12,7 @@ class Task {
     const STATUS_COMPLITED = 'complited';
     const STATUS_FAILED = 'failed';
 
-    private static $avaibleStatuses = [
+    const ALL_STATUSES = [
         self::STATUS_NEW,
         self::STATUS_CANCELLED,
         self::STATUS_RESPONDED,
@@ -34,73 +34,99 @@ class Task {
     /**
      * Available user roles
      */
-    const CUSTOMER = 'customer';
-    const PLAYER = 'player';
+    const ROLE_CUSTOMER = 'customer';
+    const ROLE_EMPLOYEE = 'employee';
 
     /**
      * Object fields
      */
     private $status = self::STATUS_NEW;
-    private $userRole = self::CUSTOMER;
-    private $playerId;
+    private $employeeId;
     private $customerId;
     private $completionDate;
+
+    public function __construct($status = STATUS_NEW, $userRole = ROLE_CUSTOMER, $employeeId, $customerId, $completionDate)
+    {
+        $this->status = $status;
+        $this->userRole = $userRole;
+        $this->employeeId = $employeeId;
+        $this->customerId = $customerId;
+        $this->completionDate = $completionDate;
+    }
 
     /**
      * Actions
      */
-    public function cancel ()
+    public function cancel ($currentUserRole): string
     {
 
-        assert($this->status == self::STATUS_NEW && $this->userRole == self::CUSTOMER);
+        assert($this->status === self::STATUS_NEW );
+        assert($this->userRole === self::ROLE_CUSTOMER);
 
-        return $this->status = self::STATUS_CANCELLED;
+        $this->status = self::STATUS_CANCELLED;
+
+        return $this->status;
 
     }
 
 
-    public function respond ()
+    public function respond ($currentUserRole): string
     {
 
-        assert($this->status == self::STATUS_NEW && $this->userRole == self::PLAYER );
+        assert($this->status === self::STATUS_NEW );
+        assert($currentUserRole === self::ROLE_EMPLOYEE );
 
-        return $this->status = self::STATUS_RESPONDED;
+        $this->status = self::STATUS_RESPONDED;
+
+        return $this->status;
 
     }
 
-    public function inProgress ()
+    public function inProgress ($currentUserRole): string
     {
 
-        assert($this->status == self::STATUS_NEW && $this->userRole == self::CUSTOMER );
+        assert($this->status === self::STATUS_NEW );
+        assert($currentUserRole === self::ROLE_CUSTOMER );
 
-        return $this->status = self::STATUS_IN_PROGRESS;
+        $this->status = self::STATUS_IN_PROGRESS;
+
+        return $this->status;
 
     }
 
-    public function done ()
+    public function done ($currentUserRole): string
     {
 
-        assert($this->status == self::STATUS_IN_PROGRESS && $this->userRole == self::CUSTOMER );
+        assert($this->status === self::STATUS_IN_PROGRESS );
+        assert($currentUserRole === self::ROLE_CUSTOMER );
 
-        return $this->status = self::STATUS_COMPLITED;
+        $this->status = self::STATUS_COMPLITED;
+
+        return $this->status;
 
     }
 
-    public function fail ()
+    public function fail ($currentUserRole): string
     {
 
-        assert($this->status == self::STATUS_IN_PROGRESS && $this->userRole == self::CUSTOMER );
+        assert($this->status === self::STATUS_IN_PROGRESS );
+        assert($currentUserRole === self::ROLE_CUSTOMER );
 
-        return $this->status = self::STATUS_FAILED;
+        $this->status = self::STATUS_FAILED;
+
+        return $this->status;
 
     }
 
-    public function refuse ()
+    public function refuse ($currentUserRole): string
     {
 
-        assert($this->status == self::STATUS_IN_PROGRESS && $this->userRole == self::PLAYER );
+        assert($this->status === self::STATUS_IN_PROGRESS );
+        assert($currentUserRole === self::ROLE_EMPLOYEE );
 
-        return $this->status = self::STATUS_NEW;
+        $this->status = self::STATUS_NEW;
+
+        return $this->status;
 
     }
 
@@ -113,14 +139,6 @@ class Task {
     }
 
     /**
-     * @param string $status
-     */
-    public function setStatus(string $status): void
-    {
-        $this->status = $status;
-    }
-
-    /**
      * @return string
      */
     public function getUserRole(): string
@@ -129,27 +147,11 @@ class Task {
     }
 
     /**
-     * @param string $userRole
-     */
-    public function setUserRole(string $userRole): void
-    {
-        $this->userRole = $userRole;
-    }
-
-    /**
      * @return mixed
      */
-    public function getPlayerId()
+    public function getEmployeeId()
     {
-        return $this->playerId;
-    }
-
-    /**
-     * @param mixed $playerId
-     */
-    public function setPlayerId($playerId): void
-    {
-        $this->playerId = $playerId;
+        return $this->employeeId;
     }
 
     /**
@@ -161,14 +163,6 @@ class Task {
     }
 
     /**
-     * @param mixed $customerId
-     */
-    public function setCustomerId($customerId): void
-    {
-        $this->customerId = $customerId;
-    }
-
-    /**
      * @return mixed
      */
     public function getCompletionDate()
@@ -176,11 +170,4 @@ class Task {
         return $this->completionDate;
     }
 
-    /**
-     * @param mixed $completionDate
-     */
-    public function setCompletionDate($completionDate): void
-    {
-        $this->completionDate = $completionDate;
-    }
 }
