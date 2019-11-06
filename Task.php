@@ -45,23 +45,22 @@ class Task {
     private $customerId;
     private $completionDate;
 
-    public function __construct($status = STATUS_NEW, $userRole = ROLE_CUSTOMER, $employeeId, $customerId, $completionDate)
+    public function __construct(int $employeeId, int $customerId, string $completionDate, string $status = STATUS_NEW)
     {
-        $this->status = $status;
-        $this->userRole = $userRole;
         $this->employeeId = $employeeId;
         $this->customerId = $customerId;
         $this->completionDate = $completionDate;
+        $this->status = $status;
     }
 
     /**
      * Actions
      */
-    public function cancel ($currentUserRole): string
+    public function cancel (string $currentUserRole): string
     {
 
         assert($this->status === self::STATUS_NEW );
-        assert($this->userRole === self::ROLE_CUSTOMER);
+        assert($currentUserRole === self::ROLE_CUSTOMER);
 
         $this->status = self::STATUS_CANCELLED;
 
@@ -70,7 +69,7 @@ class Task {
     }
 
 
-    public function respond ($currentUserRole): string
+    public function respond (string $currentUserRole): string
     {
 
         assert($this->status === self::STATUS_NEW );
@@ -82,7 +81,7 @@ class Task {
 
     }
 
-    public function inProgress ($currentUserRole): string
+    public function inProgress (string $currentUserRole): string
     {
 
         assert($this->status === self::STATUS_NEW );
@@ -94,7 +93,7 @@ class Task {
 
     }
 
-    public function done ($currentUserRole): string
+    public function done (string $currentUserRole): string
     {
 
         assert($this->status === self::STATUS_IN_PROGRESS );
@@ -106,7 +105,7 @@ class Task {
 
     }
 
-    public function fail ($currentUserRole): string
+    public function fail (string $currentUserRole): string
     {
 
         assert($this->status === self::STATUS_IN_PROGRESS );
@@ -118,7 +117,7 @@ class Task {
 
     }
 
-    public function refuse ($currentUserRole): string
+    public function refuse (string $currentUserRole): string
     {
 
         assert($this->status === self::STATUS_IN_PROGRESS );
@@ -139,33 +138,25 @@ class Task {
     }
 
     /**
-     * @return string
+     * @return int
      */
-    public function getUserRole(): string
-    {
-        return $this->userRole;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getEmployeeId()
+    public function getEmployeeId(): int
     {
         return $this->employeeId;
     }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public function getCustomerId()
+    public function getCustomerId(): int
     {
         return $this->customerId;
     }
 
     /**
-     * @return mixed
+     * @return string
      */
-    public function getCompletionDate()
+    public function getCompletionDate(): string
     {
         return $this->completionDate;
     }
