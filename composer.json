@@ -1,0 +1,15 @@
+{
+    "name": "artem/561851-task-force-1",
+    "authors": [
+        {
+            "name": "Artem Anoshin",
+            "email": "artem.anoshin@gmail.com"
+        }
+    ],
+    "require": {},
+	"autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    }
+}
