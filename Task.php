@@ -45,7 +45,7 @@ class Task {
     private $customerId;
     private $completionDate;
 
-    public function __construct(int $employeeId, int $customerId, string $completionDate, string $status = STATUS_NEW)
+    public function __construct(int $employeeId, int $customerId, string $completionDate, string $status = self::STATUS_NEW)
     {
         $this->employeeId = $employeeId;
         $this->customerId = $customerId;
@@ -162,3 +162,4 @@ class Task {
     }
 
 }
+
