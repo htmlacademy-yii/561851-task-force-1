@@ -7,7 +7,7 @@
         }
     ],
     "require": {},
-	"autoload": {
+	  "autoload": {
         "psr-4": {
             "TaskForce\\": "src/"
         }
