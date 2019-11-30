@@ -26,7 +26,7 @@ class Task {
     /**
      * Available actions
      */
-    const ACTION_CANCEL = 'cancel';
+    const ACTION_CANCEL = Actions\CancelAction::class;
     const ACTION_RESPOND = 'respond';
     const ACTION_IN_PROGRESS = 'inProgress';
     const ACTION_DONE = 'done';
