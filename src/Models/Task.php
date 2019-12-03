@@ -2,6 +2,8 @@
 
 namespace TaskForce\Models;
 
+use TaskForce\Actions\CancelAction;
+
 class Task {
 
     /**
@@ -24,22 +26,6 @@ class Task {
     ];
 
     /**
-     * Available actions
-     */
-    const ACTION_CANCEL = Actions\CancelAction::class;
-    const ACTION_RESPOND = 'respond';
-    const ACTION_IN_PROGRESS = 'inProgress';
-    const ACTION_DONE = 'done';
-    const ACTION_FAIL = 'fail';
-    const ACTION_REFUSE = 'refuse';
-
-    /**
-     * Available user roles
-     */
-    const ROLE_CUSTOMER = 'customer';
-    const ROLE_EMPLOYEE = 'employee';
-
-    /**
      * Object fields
      */
     private $status = self::STATUS_NEW;
@@ -53,82 +39,6 @@ class Task {
         $this->customerId = $customerId;
         $this->completionDate = $completionDate;
         $this->status = $status;
-    }
-
-    /**
-     * Actions
-     */
-    public function cancel (string $currentUserRole): string
-    {
-
-        assert($this->status === self::STATUS_NEW );
-        assert($currentUserRole === self::ROLE_CUSTOMER);
-
-        $this->status = self::STATUS_CANCELLED;
-
-        return $this->status;
-
-    }
-
-
-    public function respond (string $currentUserRole): string
-    {
-
-        assert($this->status === self::STATUS_NEW );
-        assert($currentUserRole === self::ROLE_EMPLOYEE );
-
-        $this->status = self::STATUS_RESPONDED;
-
-        return $this->status;
-
-    }
-
-    public function inProgress (string $currentUserRole): string
-    {
-
-        assert($this->status === self::STATUS_NEW );
-        assert($currentUserRole === self::ROLE_CUSTOMER );
-
-        $this->status = self::STATUS_IN_PROGRESS;
-
-        return $this->status;
-
-    }
-
-    public function done (string $currentUserRole): string
-    {
-
-        assert($this->status === self::STATUS_IN_PROGRESS );
-        assert($currentUserRole === self::ROLE_CUSTOMER );
-
-        $this->status = self::STATUS_COMPLITED;
-
-        return $this->status;
-
-    }
-
-    public function fail (string $currentUserRole): string
-    {
-
-        assert($this->status === self::STATUS_IN_PROGRESS );
-        assert($currentUserRole === self::ROLE_CUSTOMER );
-
-        $this->status = self::STATUS_FAILED;
-
-        return $this->status;
-
-    }
-
-    public function refuse (string $currentUserRole): string
-    {
-
-        assert($this->status === self::STATUS_IN_PROGRESS );
-        assert($currentUserRole === self::ROLE_EMPLOYEE );
-
-        $this->status = self::STATUS_NEW;
-
-        return $this->status;
-
     }
 
     /**

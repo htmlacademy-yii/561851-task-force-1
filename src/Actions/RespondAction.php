@@ -4,10 +4,10 @@ namespace TaskForce\Actions;
 
 use TaskForce\Models\Task;
 
-class CancelAction extends AbstractAction
+class RespondAction extends AbstractAction
 {
-    const PUBLIC_NAME = 'Cancel';
-    const NAME = 'cancel';
+    const PUBLIC_NAME = 'Respond';
+    const NAME = 'respond';
 
     public static function getPublicName(): string
     {
@@ -24,7 +24,7 @@ class CancelAction extends AbstractAction
         if ($task->getStatus() !== Task::STATUS_NEW) {
             return false;
         }
-        if ($userId !== $task->getCustomerId()) {
+        if ($userId !== $task->getEmployeeId()) {
             return false;
         }
 

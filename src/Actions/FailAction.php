@@ -4,10 +4,10 @@ namespace TaskForce\Actions;
 
 use TaskForce\Models\Task;
 
-class CancelAction extends AbstractAction
+class FailAction extends AbstractAction
 {
-    const PUBLIC_NAME = 'Cancel';
-    const NAME = 'cancel';
+    const PUBLIC_NAME = 'Fail';
+    const NAME = 'fail';
 
     public static function getPublicName(): string
     {
@@ -21,7 +21,7 @@ class CancelAction extends AbstractAction
 
     public static function checkPermission(Task $task, int $userId): bool
     {
-        if ($task->getStatus() !== Task::STATUS_NEW) {
+        if ($task->getStatus() !== Task::STATUS_IN_PROGRESS) {
             return false;
         }
         if ($userId !== $task->getCustomerId()) {

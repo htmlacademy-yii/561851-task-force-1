@@ -4,10 +4,10 @@ namespace TaskForce\Actions;
 
 use TaskForce\Models\Task;
 
-class CancelAction extends AbstractAction
+class InProgressAction extends AbstractAction
 {
-    const PUBLIC_NAME = 'Cancel';
-    const NAME = 'cancel';
+    const PUBLIC_NAME = 'In progress';
+    const NAME = 'inProgress';
 
     public static function getPublicName(): string
     {
