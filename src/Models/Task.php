@@ -3,8 +3,8 @@
 namespace TaskForce\Models;
 
 use TaskForce\Actions\CancelAction;
-use TaskForce\Exceptions\CheckCompletionDateException;
-use TaskForce\Exceptions\CheckStatusException;
+use TaskForce\Exceptions\InvalidCompletionDateException;
+use TaskForce\Exceptions\InvalidStatusException;
 
 class Task {
 
@@ -33,7 +33,6 @@ class Task {
     private $status = self::STATUS_NEW;
     private $employeeId;
     private $customerId;
-//    private $authorId;
     private $completionDate;
 
     public function __construct(int $employeeId, int $customerId, \DateTimeInterface $completionDate, string $status = self::STATUS_NEW)
@@ -43,24 +42,18 @@ class Task {
         $this->completionDate = $completionDate;
 
         if ($completionDate->getTimestamp() < time()) {
-            throw new CheckCompletionDateException('Date incorrect.');
+            throw new InvalidCompletionDateException('Date' . $completionDate . ' incorrect.');
         }
 
         $this->completionDate = $completionDate;
 
         if (!in_array($status, self::ALL_STATUSES, true)) {
-            throw new CheckStatusException('Status not exist.');
+            throw new InvalidStatusException('Status' . $status . ' not exist.');
         }
 
         $this->status = $status;
 
     }
-
-//    public function __construct(int $authorId, string $status = self::STATUS_NEW)
-//    {
-//        $this->$authorId = $authorId;
-//        $this->status = $status;
-//    }
 
     /**
      * @return string
@@ -77,10 +70,6 @@ class Task {
     {
         return $this->employeeId;
     }
-//    public function getAuthorId(): int
-//    {
-//        return $this->authorId;
-//    }
 
     /**
      * @return int
