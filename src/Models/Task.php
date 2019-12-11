@@ -3,6 +3,8 @@
 namespace TaskForce\Models;
 
 use TaskForce\Actions\CancelAction;
+use TaskForce\Exceptions\InvalidCompletionDateException;
+use TaskForce\Exceptions\InvalidStatusException;
 
 class Task {
 
@@ -33,12 +35,24 @@ class Task {
     private $customerId;
     private $completionDate;
 
-    public function __construct(int $employeeId, int $customerId, string $completionDate, string $status = self::STATUS_NEW)
+    public function __construct(int $employeeId, int $customerId, \DateTimeInterface $completionDate, string $status = self::STATUS_NEW)
     {
         $this->employeeId = $employeeId;
         $this->customerId = $customerId;
         $this->completionDate = $completionDate;
+
+        if ($completionDate->getTimestamp() < time()) {
+            throw new InvalidCompletionDateException('Date ' . $completionDate . ' incorrect.');
+        }
+
+        $this->completionDate = $completionDate;
+
+        if (!in_array($status, self::ALL_STATUSES, true)) {
+            throw new InvalidStatusException('Status ' . $status . ' not exist.');
+        }
+
         $this->status = $status;
+
     }
 
     /**
