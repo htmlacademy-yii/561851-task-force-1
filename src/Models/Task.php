@@ -42,13 +42,13 @@ class Task {
         $this->completionDate = $completionDate;
 
         if ($completionDate->getTimestamp() < time()) {
-            throw new InvalidCompletionDateException('Date' . $completionDate . ' incorrect.');
+            throw new InvalidCompletionDateException('Date ' . $completionDate . ' incorrect.');
         }
 
         $this->completionDate = $completionDate;
 
         if (!in_array($status, self::ALL_STATUSES, true)) {
-            throw new InvalidStatusException('Status' . $status . ' not exist.');
+            throw new InvalidStatusException('Status ' . $status . ' not exist.');
         }
 
         $this->status = $status;
