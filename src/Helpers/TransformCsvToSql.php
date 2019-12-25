@@ -4,6 +4,7 @@
 namespace TaskForce\Helpers;
 
 use TaskForce\Exceptions\SourceFileException;
+use SplFileObject;
 
 
 class TransformCsvToSql
@@ -27,14 +28,18 @@ class TransformCsvToSql
         $this->tablename = basename($this->filename, ".csv");
     }
 
-    public function transform($columns):void
+    public function transform():void
     {
+        $this->getColumns();
+
         if (!$this->columns) {
             throw new SourceFileException("Не удалось получить колонки");
         }
 
         foreach ($this->getNextLine() as $line) {
-            $this->result[] = $line;
+            if (!empty($line[0])) {
+                $this->result[] = $line;
+            }
         }
 
         if (empty($this->result)) {
@@ -42,12 +47,14 @@ class TransformCsvToSql
         }
 
         foreach ($this->result as $row) {
-            $data = '';
+            $data = "";
 
             if (!empty($row)) {
                 foreach ($row as $value) {
                     if (gettype($value) === 'integer') {
                         $data .= $value . "',";
+                    } elseif (empty($value)) {
+                        $data .= rand(1,8) . ",";
                     } else {
                         $data .= "'" . $value . "',";
                     }
@@ -73,22 +80,23 @@ class TransformCsvToSql
             throw new SourceFileException("Файл не существует");
         }
 
-        $this->fp = fopen($this->filename, 'r');
+        $this->fp = new SplFileObject($this->filename);
 
         if (!$this->fp) {
             throw new SourceFileException("Не удалось открыть файл на чтение");
         }
 
-        rewind($this->fp);
-        $this->columns = implode(',', fgetcsv($this->fp));
+        $this->fp->rewind();
+
+        $this->columns = implode(',', $this->fp->fgetcsv());
 
         return $this->columns;
     }
 
     private function getNextLine():?iterable {
         $result = null;
-        while (!feof($this->fp)) {
-            yield fgetcsv($this->fp);
+        while (!$this->fp->eof()) {
+            yield $this->fp->fgetcsv();
         }
         return $result;
     }
@@ -98,14 +106,12 @@ class TransformCsvToSql
         $dir = 'data/';
         $sqlFileName = $dir . $this->tablename . ".sql";
 
-        if (!file_exists($sqlFileName)) {
-            $f = fopen($sqlFileName, 'w+');
+        $f = new SplFileObject($sqlFileName, 'w+');
 
-            foreach ($queries as $query) {
-                fwrite($f, $query .  PHP_EOL);
-            }
-
-            fclose($f);
+        foreach ($queries as $query) {
+            $f->fwrite($query .  PHP_EOL);
         }
+
+        $f = null;
     }
 }
