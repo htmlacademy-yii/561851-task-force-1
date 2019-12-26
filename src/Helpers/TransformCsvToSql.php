@@ -12,20 +12,21 @@ class TransformCsvToSql
     private $filename;
     private $columns;
     private $fp;
-    private $tablename;
+    private $type;
     public $queries;
+    private $handler;
     private  $result = [];
-    private $error = null;
 
     /**
      * TransformCsvToSql constructor.
      * @param $filename
      * @param $columns
      */
-    public function __construct(string $filename)
+    public function __construct(string $filename, string $handler, string $type = 'INSERT')
     {
         $this->filename = $filename;
-        $this->tablename = basename($this->filename, ".csv");
+        $this->handler = $handler;
+        $this->type = $type;
     }
 
     public function transform():void
@@ -47,28 +48,57 @@ class TransformCsvToSql
         }
 
         foreach ($this->result as $row) {
-            $data = "";
 
-            if (!empty($row)) {
-                foreach ($row as $value) {
-                    if (gettype($value) === 'integer') {
-                        $data .= $value . "',";
-                    } elseif (empty($value)) {
-                        $data .= rand(1,8) . ",";
-                    } else {
-                        $data .= "'" . $value . "',";
+            $classImport = new $this->handler;
+
+            $row = $classImport->correctedResults($row);
+
+            $data = "";
+            $columns = "";
+
+            if (!empty($row['row'])) {
+
+                if ($this->type === 'INSERT') {
+
+                    foreach ($row['row'] as $key => $value) {
+                        if (gettype($value) === 'integer') {
+                            $data .= $value . ",";
+                        } else {
+                            $data .= "'" . $value . "',";
+                        }
+
+                        $columns .= "`" . $key . "`,";
                     }
+
+                    $data = substr($data,0,-1);
+                    $columns = substr($columns,0,-1);
+
+                    $query = "INSERT INTO " . $row['tablename'] . " (" . $columns . ") VALUES (" . $data . ")";
                 }
 
-                $data = substr($data,0,-1);
+                if ($this->type === 'UPDATE') {
 
-                $query = "INSERT INTO " . $this->tablename . " (" . $this->columns . ") VALUES (" . $data . ")";
+                    foreach ($row['row'] as $key => $value) {
+
+                        if (gettype($value) === 'integer') {
+                            $data .= "`" . $key . "` = " . $value . ",";
+                        } else {
+                            $data .= "`" . $key . "` = '" . $value . "',";
+                        }
+                    }
+
+                    $data = substr($data,0,-1);
+
+                    $query = "UPDATE " . $row['tablename'] . " SET (" . $data . ")";
+                }
 
                 $this->queries[] = $query;
             }
         }
 
-        $this->createSqlFile($this->queries);
+        $filename = $row['filename'] ?? $row['tablename'];
+
+        $this->createSqlFile($this->queries, $filename);
     }
 
     /**
@@ -101,10 +131,10 @@ class TransformCsvToSql
         return $result;
     }
 
-    private function createSqlFile ($queries) {
+    private function createSqlFile ($queries, $filename) {
 
         $dir = 'data/';
-        $sqlFileName = $dir . $this->tablename . ".sql";
+        $sqlFileName = $dir . $filename . ".sql";
 
         $f = new SplFileObject($sqlFileName, 'w+');
 

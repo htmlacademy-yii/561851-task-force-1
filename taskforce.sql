@@ -21,12 +21,12 @@ CREATE TABLE `city` (
   `lng` float NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `specializations` (
+CREATE TABLE `specialization` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `users_specializations` (
+CREATE TABLE `user_specialization` (
   `user_id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `specialization_id` int(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -36,26 +36,26 @@ CREATE TABLE `user` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `birthday` date NOT NULL,
-  -`city_id` int(9) NOT NULL,
+  `city_id` int(9) NOT NULL,
   `address` text NULL,
-  -`avatar` text NULL,
+  `avatar` text NULL,
   `description` text NULL,
   `pass` varchar(255) NOT NULL,
   `phone` varchar(50) NULL,
   `skype` varchar(100) NULL,
- - `messenger` varchar(100) NULL,
- - `push_new_message` BOOLEAN DEFAULT TRUE,
- - `push_task_actions` BOOLEAN DEFAULT TRUE,
- - `push_new_review` BOOLEAN DEFAULT TRUE,
-  -`show_only_customer` BOOLEAN DEFAULT TRUE,
+  `messenger` varchar(100) NULL,
+  `push_new_message` BOOLEAN DEFAULT TRUE,
+  `push_task_actions` BOOLEAN DEFAULT TRUE,
+  `push_new_review` BOOLEAN DEFAULT TRUE,
+  `show_only_customer` BOOLEAN DEFAULT TRUE,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
- - `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT user_city_id_fk FOREIGN KEY (city_id)
   REFERENCES city(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `task` (
-  -`id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` text NOT NULL,
   `cost` int(9) NOT NULL,
   `description` text NOT NULL,
@@ -106,7 +106,7 @@ CREATE TABLE `opinion` (
   REFERENCES task(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `chats` (
+CREATE TABLE `chat` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `author_id` int(9) NOT NULL,
   `consumer_id` int(9) NOT NULL,
@@ -120,7 +120,7 @@ CREATE TABLE `chats` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `attachments` (
+CREATE TABLE `attachment` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` text NOT NULL,
   `file_path` text NOT NULL,
