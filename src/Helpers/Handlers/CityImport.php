@@ -8,7 +8,7 @@ class CityImport extends CsvImport
 {
     private static $tablename = 'city';
 
-    public function correctedResults($row): array
+    public function correctedResults(array $row): array
     {
         return [
             'tablename' => self::$tablename,

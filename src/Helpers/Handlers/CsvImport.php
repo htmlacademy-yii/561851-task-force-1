@@ -9,5 +9,5 @@ abstract class CsvImport
     /**
      * Corrected Results
      */
-    abstract public function correctedResults($row): array;
+    abstract public function correctedResults(array $row): array;
 }

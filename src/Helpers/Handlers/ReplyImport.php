@@ -8,7 +8,7 @@ class ReplyImport extends CsvImport
 {
     private static $tablename = 'reply';
 
-    public function correctedResults($row): array
+    public function correctedResults(array $row): array
     {
         return [
             'tablename' => self::$tablename,
