@@ -6,41 +6,41 @@ $filesForTransform = [
     [
         'file' => __DIR__ . '/data/categories.csv',
         'handler' => new TaskForce\Helpers\Handlers\CategoryImport(),
-        'type' => 'INSERT'
+        'sqlAction' => 'INSERT'
     ],
     [
         'file' => __DIR__ . '/data/cities.csv',
         'handler' => new TaskForce\Helpers\Handlers\CityImport(),
-        'type' => 'INSERT'
+        'sqlAction' => 'INSERT'
     ],
     [
         'file' => __DIR__ . '/data/opinions.csv',
         'handler' => new TaskForce\Helpers\Handlers\OpinionImport(),
-        'type' => 'INSERT'
+        'sqlAction' => 'INSERT'
     ],
     [
         'file' => __DIR__ . '/data/profiles.csv',
         'handler' => new TaskForce\Helpers\Handlers\ProfileImport(),
-        'type' => 'UPDATE'
+        'sqlAction' => 'UPDATE'
     ],
     [
         'file' => __DIR__ . '/data/users.csv',
         'handler' => new TaskForce\Helpers\Handlers\UserImport(),
-        'type' => 'INSERT'
+        'sqlAction' => 'INSERT'
     ],
     [
         'file' => __DIR__ . '/data/replies.csv',
         'handler' => new TaskForce\Helpers\Handlers\ReplyImport(),
-        'type' => 'INSERT'
+        'sqlAction' => 'INSERT'
     ],
     [
         'file' => __DIR__ . '/data/tasks.csv',
         'handler' => new TaskForce\Helpers\Handlers\TaskImport(),
-        'type' => 'INSERT'
+        'sqlAction' => 'INSERT'
     ]
 ];
 
 foreach ($filesForTransform as $arr) {
-    $fileObj = new \TaskForce\Helpers\TransformCsvToSql($arr['file'], $arr['handler'], $arr['type']);
+    $fileObj = new \TaskForce\Helpers\TransformCsvToSql($arr['file'], $arr['handler'], $arr['sqlAction']);
     $fileObj->transform();
 }

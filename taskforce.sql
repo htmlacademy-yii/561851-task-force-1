@@ -80,7 +80,7 @@ CREATE TABLE `reply` (
   `task_id` int(9) NOT NULL,
   `description` text NOT NULL,
   `bid` int(9) NULL,
-  `rate` int(9) NULL,
+  `rating` int(9) NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT response_author_id_fk FOREIGN KEY (author_id)

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace TaskForce\Helpers;
 
 use TaskForce\Exceptions\SourceFileException;
@@ -10,54 +9,53 @@ use SplFileObject;
 class TransformCsvToSql
 {
     private $filename;
+    private $handler;
+    private $sqlAction;
     private $columns;
     private $fp;
-    private $type;
     public $queries;
-    private $handler;
-    private  $result = [];
 
     /**
      * TransformCsvToSql constructor.
-     * @param $filename
-     * @param $columns
+     * @param string $filename
+     * @param object $handler
+     * @param string $sqlAction
      */
-    public function __construct(string $filename, $handler, string $type = 'INSERT')
+    public function __construct(string $filename, object $handler, string $sqlAction = 'INSERT')
     {
+        if (!file_exists($filename)) {
+            throw new SourceFileException("Файл не существует");
+        }
+
         $this->filename = $filename;
         $this->handler = $handler;
-        $this->type = $type;
+        $this->sqlAction = $sqlAction;
+        $this->fp = new SplFileObject($this->filename);
+
+        if (!$this->fp) {
+            throw new SourceFileException("Не удалось открыть файл на чтение");
+        }
+
+        $this->fp->rewind();
+        $this->columns = $this->fp->fgetcsv();
     }
 
+    /**
+     * TransformCsvToSql transform
+     */
     public function transform():void
     {
-        $this->getColumns();
-
-        if (!$this->columns) {
-            throw new SourceFileException("Не удалось получить колонки");
-        }
-
         foreach ($this->getNextLine() as $line) {
+
             if (!empty($line[0])) {
-                $this->result[] = $line;
-            }
-        }
+                $row = $this->handler->correctedResults($line);
 
-        if (empty($this->result)) {
-            throw new SourceFileException("В файле нет данных, кроме названия колонок");
-        }
+                if (!empty($row['row'])) {
 
-        foreach ($this->result as $row) {
+                    $query = $this->sqlAction === 'INSERT' ? $this->getInsertString($row['row'], $row['tablename']) : $this->getUpdateString($row['row'], $row['tablename']);
 
-            $classImport = $this->handler;
-
-            $row = $classImport->correctedResults($row);
-
-            if (!empty($row['row'])) {
-
-                $query = $this->type === 'INSERT' ? $this->getInsertString($row['row'], $row['tablename']) : $this->getUpdateString($row['row'], $row['tablename']);
-
-                $this->queries[] = $query;
+                    $this->queries[] = $query;
+                }
             }
         }
 
@@ -67,36 +65,22 @@ class TransformCsvToSql
     }
 
     /**
-     * @return mixed
+     * @return iterable|null
      */
-    public function getColumns()
-    {
-        if (!file_exists($this->filename)) {
-            throw new SourceFileException("Файл не существует");
-        }
-
-        $this->fp = new SplFileObject($this->filename);
-
-        if (!$this->fp) {
-            throw new SourceFileException("Не удалось открыть файл на чтение");
-        }
-
-        $this->fp->rewind();
-
-        $this->columns = implode(',', $this->fp->fgetcsv());
-
-        return $this->columns;
-    }
-
     private function getNextLine():?iterable {
-        $result = null;
+
         while (!$this->fp->eof()) {
             yield $this->fp->fgetcsv();
         }
-        return $result;
+
+        return null;
     }
 
-    private function createSqlFile ($queries, $filename) {
+    /**
+     * @param $queries
+     * @param $filename
+     */
+    private function createSqlFile ($queries, $filename):void {
 
         $dir = 'data/';
         $sqlFileName = $dir . $filename . ".sql";
@@ -106,47 +90,55 @@ class TransformCsvToSql
         foreach ($queries as $query) {
             $f->fwrite($query .  PHP_EOL);
         }
-
-        $f = null;
     }
 
-    private function getInsertString ($row, $tablename) {
-        $data = "";
-        $columns = "";
+    /**
+     * @param $row
+     * @param $tablename
+     * @return string
+     */
+    private function getInsertString ($row, $tablename):string {
+        $data = array();
+        $columns = array();
 
         foreach ($row as $key => $value) {
             if (gettype($value) === 'integer') {
-                $data .= $value . ",";
+                $data[] = $value;
             } else {
-                $data .= "'" . $value . "',";
+                $data[] = "'" . $value . "'";
             }
 
-            $columns .= "`" . $key . "`,";
+            $columns[] = "`" . $key . "`";
         }
 
-        $data = substr($data,0,-1);
-        $columns = substr($columns,0,-1);
+        $data = implode(',', $data);
+        $columns = implode(',', $columns);
 
-        $query = "INSERT INTO " . $tablename . " (" . $columns . ") VALUES (" . $data . ")";
+        $query = "INSERT INTO " . $tablename . " (" . $columns . ") VALUES (" . $data . ");";
 
         return $query;
     }
 
-    public function getUpdateString ($row, $tablename) {
-        $data = "";
+    /**
+     * @param $row
+     * @param $tablename
+     * @return string
+     */
+    public function getUpdateString ($row, $tablename):string {
+        $data = array();
 
         foreach ($row as $key => $value) {
 
             if (gettype($value) === 'integer') {
-                $data .= "`" . $key . "` = " . $value . ",";
+                $data[] =  "`" . $key . "` = " . $value ;
             } else {
-                $data .= "`" . $key . "` = '" . $value . "',";
+                $data[] = "`" . $key . "` = '" . $value . "'";
             }
         }
 
-        $data = substr($data,0,-1);
+        $data = implode(',', $data);
 
-        $query = "UPDATE " . $tablename . " SET (" . $data . ") WHERE id=" . rand(1,20);
+        $query = "UPDATE " . $tablename . " SET " . $data . " WHERE `id`=" . rand(1,20) . ";";
 
         return $query;
     }
