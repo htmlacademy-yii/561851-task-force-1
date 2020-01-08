@@ -4,6 +4,7 @@ namespace TaskForce\Helpers;
 
 use TaskForce\Exceptions\SourceFileException;
 use SplFileObject;
+use TaskForce\Helpers\Handlers\AbstractCSVImport;
 
 
 class TransformCsvToSql
@@ -22,7 +23,7 @@ class TransformCsvToSql
      * @param object $handler
      * @param string $sqlAction
      */
-    public function __construct(string $filename, object $handler, string $sqlAction = 'INSERT')
+    public function __construct(string $filename, AbstractCSVImport $handler, string $sqlAction = 'INSERT')
     {
         if (!file_exists($filename)) {
             throw new SourceFileException("Файл не существует");
@@ -43,8 +44,10 @@ class TransformCsvToSql
 
     /**
      * TransformCsvToSql transform
+     *
+     * @param $sqlFileName
      */
-    public function transform():void
+    public function transform($sqlFileName):void
     {
         foreach ($this->getNextLine() as $line) {
 
@@ -53,16 +56,14 @@ class TransformCsvToSql
 
                 if (!empty($row['row'])) {
 
-                    $query = $this->sqlAction === 'INSERT' ? $this->getInsertString($row['row'], $row['tablename']) : $this->getUpdateString($row['row'], $row['tablename']);
+                    $query = $this->sqlAction === 'INSERT' ? $this->getInsertString($row['row'], $row['tablename']) : $this->getUpdateString($row['row'], $row['tablename'], $row['maxCountIds']);
 
                     $this->queries[] = $query;
                 }
             }
         }
 
-        $filename = $row['filename'] ?? $row['tablename'];
-
-        $this->createSqlFile($filename);
+        $this->createSqlFile($sqlFileName);
     }
 
     /**
@@ -124,7 +125,7 @@ class TransformCsvToSql
      * @param $tablename
      * @return string
      */
-    public function getUpdateString (array $row, string $tablename):string {
+    public function getUpdateString (array $row, string $tablename, int $maxCountIds):string {
         $data = [];
 
         foreach ($row as $key => $value) {
@@ -138,7 +139,7 @@ class TransformCsvToSql
 
         $data = implode(',', $data);
 
-        $query = "UPDATE " . $tablename . " SET " . $data . " WHERE `id`=" . rand(1,20) . ";";
+        $query = "UPDATE " . $tablename . " SET " . $data . " WHERE `id`=" . rand(1, $maxCountIds) . ";";
 
         return $query;
     }

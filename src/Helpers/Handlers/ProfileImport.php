@@ -4,23 +4,22 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-class ProfileImport extends CsvImport
+class ProfileImport extends AbstractCSVImport
 {
     private static $tablename = 'user';
-    private static $filename = 'profile';
 
     public function correctedResults(array $row): array
     {
         return [
             'tablename' => self::$tablename,
-            'filename' => self::$filename,
             'row' => [
-                'address' => $row[0],
-                'birthday' => $row[1],
-                'description' => $row[2],
-                'phone' => $row[3],
-                'skype' => $row[4]
-            ]
+                'address' => $row[0] ?? null,
+                'birthday' => $row[1] ?? '0000-00-00',
+                'description' => $row[2] ?? null,
+                'phone' => $row[3] ?? null,
+                'skype' => $row[4] ?? null
+            ],
+            'maxCountIds' => 20
         ];
     }
 }

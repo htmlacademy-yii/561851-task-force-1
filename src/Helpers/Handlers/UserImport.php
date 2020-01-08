@@ -4,7 +4,7 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-class UserImport extends CsvImport
+class UserImport extends AbstractCSVImport
 {
     private static $tablename = 'user';
 

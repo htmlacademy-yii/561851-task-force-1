@@ -4,7 +4,7 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-class ReplyImport extends CsvImport
+class ReplyImport extends AbstractCSVImport
 {
     private static $tablename = 'reply';
 

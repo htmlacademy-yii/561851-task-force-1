@@ -4,7 +4,7 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-class CityImport extends CsvImport
+class CityImport extends AbstractCSVImport
 {
     private static $tablename = 'city';
 

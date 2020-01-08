@@ -4,7 +4,7 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-abstract class CsvImport
+abstract class AbstractCSVImport
 {
     /**
      * Corrected Results

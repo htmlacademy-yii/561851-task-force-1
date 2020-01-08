@@ -4,7 +4,7 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-class CategoryImport extends CsvImport
+class CategoryImport extends AbstractCSVImport
 {
     private static $tablename = 'category';
 

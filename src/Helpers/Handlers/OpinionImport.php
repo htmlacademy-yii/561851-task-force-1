@@ -4,7 +4,7 @@
 namespace TaskForce\Helpers\Handlers;
 
 
-class OpinionImport extends CsvImport
+class OpinionImport extends AbstractCSVImport
 {
     private static $tablename = 'opinion';
 
