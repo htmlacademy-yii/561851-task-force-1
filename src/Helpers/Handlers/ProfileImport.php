@@ -14,7 +14,7 @@ class ProfileImport extends AbstractCSVImport
             'tablename' => self::$tablename,
             'row' => [
                 'address' => $row[0] ?? null,
-                'birthday' => $row[1] ?? '0000-00-00',
+                'birthday' => $row[1] ?? null,
                 'description' => $row[2] ?? null,
                 'phone' => $row[3] ?? null,
                 'skype' => $row[4] ?? null

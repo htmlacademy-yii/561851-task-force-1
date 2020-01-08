@@ -35,7 +35,7 @@ CREATE TABLE `user` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `birthday` date NOT NULL,
+  `birthday` date NULL,
   `city_id` int(9) NOT NULL,
   `address` text NULL,
   `avatar` text NULL,

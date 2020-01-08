@@ -9,7 +9,6 @@ use TaskForce\Helpers\Handlers\AbstractCSVImport;
 
 class TransformCsvToSql
 {
-    private $filename;
     private $handler;
     private $sqlAction;
     private $columns;
@@ -29,25 +28,24 @@ class TransformCsvToSql
             throw new SourceFileException("Файл не существует");
         }
 
-        $this->filename = $filename;
         $this->handler = $handler;
         $this->sqlAction = $sqlAction;
-        $this->fp = new SplFileObject($this->filename);
+        $this->fp = new SplFileObject($filename);
 
         if (!$this->fp) {
             throw new SourceFileException("Не удалось открыть файл на чтение");
         }
 
         $this->fp->rewind();
-        $this->columns = $this->fp->fgetcsv();
+        $this->fp->fgetcsv();
     }
 
     /**
      * TransformCsvToSql transform
      *
-     * @param $sqlFileName
+     * @param string $sqlFileName
      */
-    public function transform($sqlFileName):void
+    public function transform(string $sqlFileName):void
     {
         foreach ($this->getNextLine() as $line) {
 
@@ -79,14 +77,11 @@ class TransformCsvToSql
     }
 
     /**
-     * @param $queries
-     * @param $filename
+     * @param string $filename
      */
     private function createSqlFile (string $filename):void {
 
-        $sqlFileName = $this->dir . $filename . ".sql";
-
-        $f = new SplFileObject($sqlFileName, 'w+');
+        $f = new SplFileObject($filename, 'w+');
 
         foreach ($this->queries as $query) {
             $f->fwrite($query .  PHP_EOL);

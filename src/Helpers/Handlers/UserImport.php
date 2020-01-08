@@ -15,7 +15,7 @@ class UserImport extends AbstractCSVImport
             'row' => [
                 'email' => $row[0],
                 'name' => $row[1],
-                'pass' => $row[2],
+                'pass' => password_hash($row[2], PASSWORD_DEFAULT),
                 'created_at' => $row[3],
                 'city_id' => rand(1, 1108)
             ]
