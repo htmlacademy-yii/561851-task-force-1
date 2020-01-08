@@ -14,8 +14,8 @@ $filesForTransform = [
         'sqlAction' => 'INSERT'
     ],
     [
-        'file' => __DIR__ . '/data/opinions.csv',
-        'handler' => new TaskForce\Helpers\Handlers\OpinionImport(),
+        'file' => __DIR__ . '/data/users.csv',
+        'handler' => new TaskForce\Helpers\Handlers\UserImport(),
         'sqlAction' => 'INSERT'
     ],
     [
@@ -24,18 +24,18 @@ $filesForTransform = [
         'sqlAction' => 'UPDATE'
     ],
     [
-        'file' => __DIR__ . '/data/users.csv',
-        'handler' => new TaskForce\Helpers\Handlers\UserImport(),
+        'file' => __DIR__ . '/data/tasks.csv',
+        'handler' => new TaskForce\Helpers\Handlers\TaskImport(),
+        'sqlAction' => 'INSERT'
+    ],
+    [
+        'file' => __DIR__ . '/data/opinions.csv',
+        'handler' => new TaskForce\Helpers\Handlers\OpinionImport(),
         'sqlAction' => 'INSERT'
     ],
     [
         'file' => __DIR__ . '/data/replies.csv',
         'handler' => new TaskForce\Helpers\Handlers\ReplyImport(),
-        'sqlAction' => 'INSERT'
-    ],
-    [
-        'file' => __DIR__ . '/data/tasks.csv',
-        'handler' => new TaskForce\Helpers\Handlers\TaskImport(),
         'sqlAction' => 'INSERT'
     ]
 ];

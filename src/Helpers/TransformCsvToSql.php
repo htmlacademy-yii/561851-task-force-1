@@ -14,6 +14,7 @@ class TransformCsvToSql
     private $columns;
     private $fp;
     public $queries;
+    private $dir = 'data/';
 
     /**
      * TransformCsvToSql constructor.
@@ -61,7 +62,7 @@ class TransformCsvToSql
 
         $filename = $row['filename'] ?? $row['tablename'];
 
-        $this->createSqlFile($this->queries, $filename);
+        $this->createSqlFile($filename);
     }
 
     /**
@@ -80,14 +81,13 @@ class TransformCsvToSql
      * @param $queries
      * @param $filename
      */
-    private function createSqlFile ($queries, $filename):void {
+    private function createSqlFile (string $filename):void {
 
-        $dir = 'data/';
-        $sqlFileName = $dir . $filename . ".sql";
+        $sqlFileName = $this->dir . $filename . ".sql";
 
         $f = new SplFileObject($sqlFileName, 'w+');
 
-        foreach ($queries as $query) {
+        foreach ($this->queries as $query) {
             $f->fwrite($query .  PHP_EOL);
         }
     }
@@ -97,9 +97,9 @@ class TransformCsvToSql
      * @param $tablename
      * @return string
      */
-    private function getInsertString ($row, $tablename):string {
-        $data = array();
-        $columns = array();
+    private function getInsertString (array $row, string $tablename):string {
+        $data = [];
+        $columns = [];
 
         foreach ($row as $key => $value) {
             if (gettype($value) === 'integer') {
@@ -124,8 +124,8 @@ class TransformCsvToSql
      * @param $tablename
      * @return string
      */
-    public function getUpdateString ($row, $tablename):string {
-        $data = array();
+    public function getUpdateString (array $row, string $tablename):string {
+        $data = [];
 
         foreach ($row as $key => $value) {
 
