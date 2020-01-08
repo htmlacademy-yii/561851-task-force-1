@@ -35,11 +35,11 @@ CREATE TABLE `user` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `birthday` date NOT NULL,
+  `birthday` date NULL,
   `city_id` int(9) NOT NULL,
-  `address` text NOT NULL,
-  `avatar` text NOT NULL,
-  `description` text NOT NULL,
+  `address` text NULL,
+  `avatar` text NULL,
+  `description` text NULL,
   `pass` varchar(255) NOT NULL,
   `phone` varchar(50) NULL,
   `skype` varchar(100) NULL,
@@ -59,6 +59,7 @@ CREATE TABLE `task` (
   `name` text NOT NULL,
   `cost` int(9) NOT NULL,
   `description` text NOT NULL,
+  `address` text NOT NULL,
   `lat` float NOT NULL,
   `lng` float NOT NULL,
   `status` enum('new', 'cancelled', 'responded', 'in_progress', 'complited', 'failed') NOT NULL DEFAULT 'new',
@@ -73,12 +74,13 @@ CREATE TABLE `task` (
   REFERENCES user(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `response` (
+CREATE TABLE `reply` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `author_id` int(9) NOT NULL,
   `task_id` int(9) NOT NULL,
   `description` text NOT NULL,
   `bid` int(9) NULL,
+  `rating` int(9) NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CONSTRAINT response_author_id_fk FOREIGN KEY (author_id)
@@ -87,7 +89,7 @@ CREATE TABLE `response` (
     REFERENCES task(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE `review` (
+CREATE TABLE `opinion` (
   `id` int(9) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `author_id` int(9) NOT NULL,
   `consumer_id` int(9) NOT NULL,
