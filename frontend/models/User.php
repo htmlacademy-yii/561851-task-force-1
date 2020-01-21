@@ -26,10 +26,10 @@ use Yii;
  * @property string $created_at
  * @property string $updated_at
  *
- * @property Chat[] $chats
- * @property Chat[] $chats0
- * @property Opinion[] $opinions
- * @property Opinion[] $opinions0
+ * @property Chat[] $author_chats
+ * @property Chat[] $consumer_chats
+ * @property Opinion[] $author_opinions
+ * @property Opinion[] $consumer_opinions
  * @property Reply[] $replies
  * @property Task[] $tasks
  * @property City $city
@@ -91,7 +91,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getChats()
+    public function getAuthorChats()
     {
         return $this->hasMany(Chat::className(), ['author_id' => 'id']);
     }
@@ -99,7 +99,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getChats0()
+    public function getConsumerChats()
     {
         return $this->hasMany(Chat::className(), ['consumer_id' => 'id']);
     }
@@ -107,7 +107,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOpinions()
+    public function getAuthorOpinions()
     {
         return $this->hasMany(Opinion::className(), ['author_id' => 'id']);
     }
@@ -115,7 +115,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOpinions0()
+    public function getConsumerOpinions()
     {
         return $this->hasMany(Opinion::className(), ['consumer_id' => 'id']);
     }
