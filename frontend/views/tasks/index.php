@@ -7,28 +7,12 @@ $this->title = 'Новые задания';
 
 <section class="new-task">
     <div class="new-task__wrapper">
-        <h1><?php echo $this->title; ?></h1>
+        <h1><?= $this->title; ?></h1>
 
         <?php if (!empty($tasks)) : ?>
-            <?php foreach ($tasks as $task) : ?>
-                <div class="new-task__card">
-                    <div class="new-task__title">
-                        <a href="#" class="link-regular"><h2><?php echo $task->name; ?></h2></a>
-                        <a  class="new-task__type link-regular" href="?r=category/<?php echo $task->category->id; ?>"><p><?php echo $task->category->name; ?></p></a>
-                    </div>
-                    <div class="new-task__icon new-task__icon--translation"></div>
-
-                    <?php if ($task->description) : ?>
-                        <p class="new-task_description"><?php echo $task->description; ?></p>
-                    <?php endif; ?>
-
-                    <?php if ($task->cost) : ?>
-                        <b class="new-task__price new-task__price--translation"><?php echo $task->cost; ?><b> ₽</b></b>
-                    <?php endif; ?>
-                    <p class="new-task__place">Санкт-Петербург, Центральный район</p>
-                    <span class="new-task__time">4 часа назад</span>
-                </div>
-            <?php endforeach; ?>
+            <?php foreach ($tasks as $task) :
+                echo $this->render('_task', ['task' => $task]);
+            endforeach; ?>
         <?php endif; ?>
 
     </div>

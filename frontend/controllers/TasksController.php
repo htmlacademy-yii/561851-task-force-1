@@ -8,15 +8,17 @@ use yii\web\Controller;
 
 class TasksController extends Controller
 {
+	const status = 'new';
+
     /**
-     * Displays tasks page.
+     * Display new tasks.
      *
      * @return mixed
      */
     public function actionIndex()
     {
-        $tasks = Task::findAll(['status' => 'new']);
+        $tasks = Task::find([ 'status' => self::status ])->orderBy([ 'created_at'=> SORT_DESC ])->all();
 
-        return $this->render('tasks', ['tasks' => $tasks]);
+        return $this->render('index', ['tasks' => $tasks]);
     }
 }
