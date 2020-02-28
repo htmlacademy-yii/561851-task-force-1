@@ -3,7 +3,6 @@ use yii\helpers\Url;
 use yii\i18n\Formatter;
 
 $formatter = new Formatter();
-$formatter->language = 'ru-RU, ru';
 $elapsedTime = $formatter->asRelativeTime($task->created_at);
 ?>
 <div class="new-task__card">
