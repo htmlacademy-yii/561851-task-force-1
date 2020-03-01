@@ -9,11 +9,13 @@ $this->title = 'Новые задания';
     <div class="new-task__wrapper">
         <h1><?= $this->title; ?></h1>
 
-        <?php if (!empty($tasks)) : ?>
-            <?php foreach ($tasks as $task) :
+        <?php
+        if (!empty($tasks)) :
+            foreach ($tasks as $task) :
                 echo $this->render('_task', ['task' => $task]);
-            endforeach; ?>
-        <?php endif; ?>
+            endforeach;
+        endif;
+        ?>
 
     </div>
     <div class="new-task__pagination">

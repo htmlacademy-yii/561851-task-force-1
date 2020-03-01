@@ -1,9 +1,5 @@
 <?php
 use yii\helpers\Url;
-use yii\i18n\Formatter;
-
-$formatter = new Formatter();
-$elapsedTime = $formatter->asRelativeTime($task->created_at);
 ?>
 <div class="new-task__card">
     <div class="new-task__title">
@@ -16,5 +12,5 @@ $elapsedTime = $formatter->asRelativeTime($task->created_at);
 
     <b class="new-task__price new-task__price--translation"><?= $task->cost; ?><b> ₽</b></b>
     <p class="new-task__place">Санкт-Петербург, Центральный район</p>
-    <span class="new-task__time"><?= $elapsedTime; ?></span>
+    <span class="new-task__time"><?= \Yii::$app->formatter->asRelativeTime($task->created_at); ?></span>
 </div>

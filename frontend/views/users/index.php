@@ -1,6 +1,8 @@
 <?php
 
 /* @var $this yii\web\View */
+
+$this->title = 'Пользователи';
 ?>
 
 <section class="user__search">
@@ -19,11 +21,13 @@
         </ul>
     </div>
 
-    <?php if (!empty($users)) : ?>
-        <?php foreach ($users as $user) :
+    <?php
+    if (!empty($users)) :
+        foreach ($users as $user) :
             echo $this->render('_user', ['user' => $user]);
-        endforeach; ?>
-    <?php endif; ?>
+        endforeach;
+    endif;
+    ?>
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
