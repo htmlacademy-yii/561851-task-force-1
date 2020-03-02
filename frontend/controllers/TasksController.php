@@ -15,7 +15,7 @@ class TasksController extends Controller
      */
     public function actionIndex()
     {
-        $tasks = Task::find([ 'status' => Task::STATUS ])->orderBy([ 'created_at'=> SORT_DESC ])->all();
+        $tasks = Task::find([ 'status' => Task::STATUS_NEW ])->orderBy([ 'created_at'=> SORT_DESC ])->all();
 
         return $this->render('index', ['tasks' => $tasks]);
     }

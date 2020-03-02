@@ -29,7 +29,7 @@ use Yii;
  */
 class Task extends \yii\db\ActiveRecord
 {
-    const STATUS = 'new';
+    const STATUS_NEW = 'new';
 
     /**
      * {@inheritdoc}
