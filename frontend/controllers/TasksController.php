@@ -19,4 +19,16 @@ class TasksController extends Controller
 
         return $this->render('index', ['tasks' => $tasks]);
     }
+
+    /**
+     * Display filtered tasks.
+     *
+     * @return mixed
+     */
+    public function actionFilter()
+    {
+        $tasks = Task::find([ 'status' => Task::STATUS_NEW ])->orderBy([ 'created_at'=> SORT_DESC ])->all();
+
+        return $this->render('index', ['tasks' => $tasks]);
+    }
 }
