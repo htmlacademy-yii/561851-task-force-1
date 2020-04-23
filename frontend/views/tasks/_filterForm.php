@@ -16,19 +16,13 @@ use yii\widgets\ActiveForm;
                 'tag' => false
             ]
         ])->checkboxList(
-            [
-                '1'=>'Курьерские услуги',
-                '2'=>'Грузоперевозки',
-                '3'=>'Переводы',
-                '4'=>'Строительство и ремонт',
-                '5'=>'Выгул животных'
-            ],
+            $filterTasksForm->getCategories(),
             [
                 'item' => function($index, $label, $name, $checked, $value)
                 {
                     return '
-                        <input id="'. $index .'" name="'. $name .'" type="checkbox" class="visually-hidden checkbox__input" value="' . $index . '">
-                        <label for="'. $index .'">'. $label .'</label>
+                        <input id="categories'. $index .'" name="'. $name .'" type="checkbox" class="visually-hidden checkbox__input" value="' . $value . '">
+                        <label for="categories'. $index .'">'. $label .'</label>
                         ';
                 }
             ]); ?>
@@ -36,6 +30,10 @@ use yii\widgets\ActiveForm;
 
     <fieldset class="search-task__categories">
         <legend>Дополнительно</legend>
+        <?= $form->field($filterTasksForm, 'additionalParamWithoutReply', [
+            'template' => "{input}\n{label}",
+            'labelOptions' => [ 'class' => '' ]
+        ])->checkbox(['class' => 'visually-hidden checkbox__input'], false)->label('Без откликов'); ?>
         <?= $form->field($filterTasksForm, 'additionalParamRemoteJob', [
             'template' => "{input}\n{label}\n{hint}\n{error}",
             'labelOptions' => [ 'class' => '' ]

@@ -4,12 +4,14 @@ namespace app\models;
 
 use yii\base\Model;
 use app\models\Task;
+use app\models\Category;
 use yii\helpers\VarDumper;
 
 class FilterTasksForm extends Model
 {
     public $taskCategories;
     public $additionalParamRemoteJob;
+    public $additionalParamWithoutReply;
     public $period;
     public $searchByName;
 
@@ -46,11 +48,13 @@ class FilterTasksForm extends Model
             }
         }
 
-        VarDumper::dump($this->additionalParamRemoteJob);
-
         if ($this->additionalParamRemoteJob) {
+            $tasks = $tasks->andWhere(['lat' => null, 'lng' => null]);
+        }
+
+        if ($this->additionalParamWithoutReply) {
             die;
-//            $tasks = $tasks->where(['lat' => null, 'lng' => null]);
+//            $tasks = $tasks->andWhere(['lat' => null, 'lng' => null]);
         }
 
         if ($this->taskCategories) {
@@ -76,5 +80,16 @@ class FilterTasksForm extends Model
             self::PERIOD_MONTH => self::PERIOD_MONTH_LABEL,
             self::PERIOD_YEAR  => self::PERIOD_YEAR_LABEL
         ];
+    }
+
+    public function getCategories()
+    {
+        $categories = Category::find()->all();
+        $categoriesForForm = [];
+
+        foreach ($categories as $category) {
+            $categoriesForForm[$category->id] = $category->name;
+        }
+        return $categoriesForForm;
     }
 }
