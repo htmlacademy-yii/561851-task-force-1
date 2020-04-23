@@ -11,7 +11,7 @@ use yii\widgets\ActiveForm;
 
     <fieldset class="search-task__categories">
         <legend>Категории</legend>
-        <?= $form->field($filterTasksForm, 'task_category', [
+        <?= $form->field($filterTasksForm, 'taskCategories', [
             'options' => [
                 'tag' => false
             ]
@@ -36,46 +36,26 @@ use yii\widgets\ActiveForm;
 
     <fieldset class="search-task__categories">
         <legend>Дополнительно</legend>
-        <?= $form->field($filterTasksForm, 'additional', [
-            'options' => [
-                'tag' => false
-            ]
-        ])->checkboxList(
-            [
-                '6'=>'Без откликов',
-                '7'=>'Удаленная работа'
-            ],
-            [
-                'item' => function($index, $label, $name, $checked, $value)
-                {
-                    return '
-                        <input id="additional'. $index .'" name="'. $name .'" type="checkbox" class="visually-hidden checkbox__input">
-                        <label for="additional'. $index .'">'. $label .'</label>
-                        ';
-                }
-            ]
-        ); ?>
+        <?= $form->field($filterTasksForm, 'additionalParamRemoteJob', [
+            'template' => "{input}\n{label}\n{hint}\n{error}",
+            'labelOptions' => [ 'class' => '' ]
+        ])->checkbox(['class' => 'visually-hidden checkbox__input'], false)->label('Удаленная работа'); ?>
     </fieldset>
 
     <label class="search-task__name" for="8">Период</label>
-    <?= $form->field($filterTasksForm, 'time', [
+    <?= $form->field($filterTasksForm, 'period', [
         'options' => [
             'tag' => false,
         ]
     ])->dropDownList(
-        [
-            'day'   => 'За день',
-            'week'  => 'За неделю',
-            'month' => 'За месяц',
-            'year'  => 'За год'
-        ],
+        $filterTasksForm->getPeriods(),
         [
             'class' => 'multiple-select input',
             'options' => [ 'week' => ['Selected'=>'selected']]
         ]
     ); ?>
 
-    <?= $form->field($filterTasksForm, 'q', [
+    <?= $form->field($filterTasksForm, 'searchByName', [
         'template' => "{label}\n{input}\n{hint}\n{error}",
         'labelOptions' => [ 'class' => 'search-task__name' ]
     ])->textInput(['class' => 'input-middle input'])->label('Поиск по названию'); ?>

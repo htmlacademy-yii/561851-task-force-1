@@ -19,34 +19,17 @@ class TasksController extends Controller
      */
     public function actionIndex()
     {
-
-
         $form = new FilterTasksForm();
+        $tasks = Task::find([ 'status' => Task::STATUS_NEW ]);
 
-        if ($form->load(Yii::$app->request->post()) && $form->validate()) {
-            $tasks = Task::find([ 'status' => Task::STATUS_NEW ]);
+        if ($form->load(Yii::$app->request->post())) {
 
-            if (Yii::$app->request->post()['FilterTasksForm']['q']) {
-                $tasks = $tasks->where(['like', 'name', '%' . Yii::$app->request->post()['FilterTasksForm']['q'] . '%', false]);
-            }
+            $tasks = $form->getFilteredTasks($tasks);
 
-            if (Yii::$app->request->post()['FilterTasksForm']['time']) {
-                $date = new \DateTime();
-                $date->sub(\DateInterval::createFromDateString(Yii::$app->request->post()['FilterTasksForm']['time']));
-                $result = $date->format('Y-m-d H:i:s');
-                $tasks = $tasks->andFilterWhere(['>', 'created_at', $result]);
-            }
-
-
-            //VarDumper::dump(Yii::$app->request->post()['FilterTasksForm']['q']);
-
-            $tasks = $tasks->orderBy([ 'created_at'=> SORT_DESC ])->all();
-
-            return $this->render('index', ['tasks' => $tasks, 'filterTasksForm' => $form]);
-        } else {
-            $tasks = Task::find([ 'status' => Task::STATUS_NEW ])->orderBy([ 'created_at'=> SORT_DESC ])->all();
-
-            return $this->render('index', ['tasks' => $tasks, 'filterTasksForm' => $form]);
         }
+
+        $tasks = $tasks->orderBy([ 'created_at'=> SORT_DESC ])->all();
+
+        return $this->render('index', ['tasks' => $tasks, 'filterTasksForm' => $form]); //дОБАВИТЬ СПИСОК КАТЕГОРИЙ ИЗ бд
     }
 }
