@@ -77,14 +77,26 @@ class FilterTasksForm extends Model
     {
         return [
             [
-                [
-                    'taskCategories',
-                    'additionalParamRemoteJob',
-                    'additionalParamWithoutReply',
-                    'period',
-                    'searchByName'
-                ],
-                'safe'
+                'taskCategories',
+                'exist',
+                'targetClass' => app\models\Category::class
+            ],
+            [
+                'additionalParamRemoteJob',
+                'boolean'
+            ],
+            [
+                'additionalParamWithoutReply',
+                'boolean'
+            ],
+            [
+                'period',
+                'date'
+            ],
+            [
+                'searchByName',
+                'string',
+                'length' => [0, 20]
             ]
         ];
     }
