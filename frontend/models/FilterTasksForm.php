@@ -5,7 +5,9 @@ namespace app\models;
 use yii\base\Model;
 use app\models\Task;
 use app\models\Category;
+use yii\helpers\ArrayHelper;
 use yii\helpers\VarDumper;
+use app\models\Reply;
 
 class FilterTasksForm extends Model
 {
@@ -53,12 +55,19 @@ class FilterTasksForm extends Model
         }
 
         if ($this->additionalParamWithoutReply) {
-            die;
-//            $tasks = $tasks->andWhere(['lat' => null, 'lng' => null]);
+            $tasksWithreplyes = Reply::find()->select('task_id')->all();
+            $tasksWithreplyesIds = [];
+            foreach ($tasksWithreplyes as $id) {
+                if (!in_array($id->task_id, $tasksWithreplyesIds)) {
+                    $tasksWithreplyesIds[] = $id->task_id;
+                }
+            }
+
+            $tasks = $tasks->andWhere(['not in','id', $tasksWithreplyesIds]);
         }
 
         if ($this->taskCategories) {
-            VarDumper::dump($this->taskCategories);
+            $tasks = $tasks->andWhere(['category_id' => $this->taskCategories]);
         }
 
         return $tasks;
@@ -67,8 +76,16 @@ class FilterTasksForm extends Model
     public function rules()
     {
         return [
-            [['taskCategories', 'additionalParams', 'period', 'searchByName'], 'safe']
-            //Изучить валидацию
+            [
+                [
+                    'taskCategories',
+                    'additionalParamRemoteJob',
+                    'additionalParamWithoutReply',
+                    'period',
+                    'searchByName'
+                ],
+                'safe'
+            ]
         ];
     }
 
@@ -85,11 +102,8 @@ class FilterTasksForm extends Model
     public function getCategories()
     {
         $categories = Category::find()->all();
-        $categoriesForForm = [];
+        $categoriesForForm = ArrayHelper::map($categories, 'id', 'name');
 
-        foreach ($categories as $category) {
-            $categoriesForForm[$category->id] = $category->name;
-        }
         return $categoriesForForm;
     }
 }
