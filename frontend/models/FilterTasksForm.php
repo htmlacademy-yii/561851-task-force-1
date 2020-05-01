@@ -25,6 +25,8 @@ class FilterTasksForm extends Model
     const PERIOD_WEEK_LABEL = 'За неделю';
     const PERIOD_MONTH_LABEL = 'За месяц';
     const PERIOD_YEAR_LABEL = 'За год';
+    const MIN_USER_NAME_LENGTH = 0;
+    const MAX_USER_NAME_LENGTH = 24;
 
 
     public function getFilteredTasks($tasks)
@@ -96,7 +98,7 @@ class FilterTasksForm extends Model
             [
                 'searchByName',
                 'string',
-                'length' => [0, 20]
+                'length' => [self::MIN_USER_NAME_LENGTH, self::MAX_USER_NAME_LENGTH]
             ]
         ];
     }
@@ -109,13 +111,5 @@ class FilterTasksForm extends Model
             self::PERIOD_MONTH => self::PERIOD_MONTH_LABEL,
             self::PERIOD_YEAR  => self::PERIOD_YEAR_LABEL
         ];
-    }
-
-    public function getCategories()
-    {
-        $categories = Category::find()->all();
-        $categoriesForForm = ArrayHelper::map($categories, 'id', 'name');
-
-        return $categoriesForForm;
     }
 }

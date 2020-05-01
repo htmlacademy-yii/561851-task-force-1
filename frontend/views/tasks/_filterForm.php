@@ -1,4 +1,6 @@
 <?php
+
+use yii\helpers\ArrayHelper;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 ?>
@@ -8,7 +10,6 @@ use yii\widgets\ActiveForm;
         'class' => 'search-task__form'
     ]
 ]); ?>
-
     <fieldset class="search-task__categories">
         <legend>Категории</legend>
         <?= $form->field($filterTasksForm, 'taskCategories', [
@@ -16,7 +17,7 @@ use yii\widgets\ActiveForm;
                 'tag' => false
             ]
         ])->checkboxList(
-            $filterTasksForm->getCategories(),
+            ArrayHelper::map($categories, 'id', 'name'),
             [
                 'item' => function($index, $label, $name, $checked, $value)
                 {
@@ -49,7 +50,7 @@ use yii\widgets\ActiveForm;
         $filterTasksForm->getPeriods(),
         [
             'class' => 'multiple-select input',
-            'options' => [ 'week' => ['Selected'=>'selected']]
+            'options' => [ $filterTasksForm::PERIOD_WEEK => ['Selected'=>'selected']]
         ]
     ); ?>
 

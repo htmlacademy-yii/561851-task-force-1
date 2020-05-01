@@ -2,9 +2,9 @@
 
 namespace frontend\controllers;
 
+use app\models\Category;
 use app\models\FilterTasksForm;
 use app\models\Task;
-use frontend\models\Tasks;
 use Yii;
 use yii\debug\panels\DumpPanel;
 use yii\helpers\VarDumper;
@@ -29,7 +29,8 @@ class TasksController extends Controller
         }
 
         $tasks = $tasks->orderBy([ 'created_at'=> SORT_DESC ])->all();
+        $categories = Category::find()->all();
 
-        return $this->render('index', ['tasks' => $tasks, 'filterTasksForm' => $form]); //дОБАВИТЬ СПИСОК КАТЕГОРИЙ ИЗ бд
+        return $this->render('index', ['tasks' => $tasks, 'filterTasksForm' => $form, 'categories' => $categories]);
     }
 }

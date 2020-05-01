@@ -31,7 +31,7 @@ $this->title = 'Новые задания';
 </section>
 <section  class="search-task">
     <div class="search-task__wrapper">
-        <?php echo $this->render('_filterForm', ['filterTasksForm' => $filterTasksForm]); ?>
+        <?php echo $this->render('_filterForm', ['filterTasksForm' => $filterTasksForm, 'categories' => $categories]); ?>
     </div>
 </section>
 
