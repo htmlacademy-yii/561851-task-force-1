@@ -21,23 +21,8 @@ class m200430_095144_add_last_activity_at_field_in_user_table extends Migration
     public function safeDown()
     {
         $this->dropColumn('{{%user}}', 'last_activity_at');
-        echo "m200430_095144_add_last_activity_at_field_in_user_table cannot be reverted.\n";
+        echo "m200430_095144_add_last_activity_at_field_in_user_table returned back.\n";
 
         return false;
     }
-
-    /*
-    // Use up()/down() to run migration code without a transaction.
-    public function up()
-    {
-
-    }
-
-    public function down()
-    {
-        echo "m200430_095144_add_last_activity_at_field_in_user_table cannot be reverted.\n";
-
-        return false;
-    }
-    */
 }
