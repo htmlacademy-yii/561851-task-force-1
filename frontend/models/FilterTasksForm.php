@@ -29,7 +29,7 @@ class FilterTasksForm extends Model
     const MAX_USER_NAME_LENGTH = 24;
 
 
-    public function getFilteredTasks($tasks)
+    public function getFilteredTasks($tasks) : object
     {
         if ($this->searchByName) {
             $tasks = $tasks->where(['like', 'name', $this->searchByName]);
@@ -37,17 +37,13 @@ class FilterTasksForm extends Model
 
         if ($this->period) {
             switch ($this->period) {
-                case 'day' :
-                    $tasks = $tasks->andWhere('created_at >= CURDATE()');
+                case 'day' : $tasks = $this->tasksPerDay($tasks);
                     break;
-                case 'week' :
-                    $tasks = $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)');
+                case 'week' : $tasks = $this->tasksPerWeek($tasks);
                     break;
-                case 'month' :
-                    $tasks = $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)');
+                case 'month' : $tasks = $this->tasksPerMonth($tasks);
                     break;
-                case 'year' :
-                    $tasks = $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 YEAR)');
+                case 'year' : $tasks = $this->tasksPerYear($tasks);
                     break;
             }
         }
@@ -57,15 +53,7 @@ class FilterTasksForm extends Model
         }
 
         if ($this->additionalParamWithoutReply) {
-            $tasksWithreplyes = Reply::find()->select('task_id')->all();
-            $tasksWithreplyesIds = [];
-            foreach ($tasksWithreplyes as $id) {
-                if (!in_array($id->task_id, $tasksWithreplyesIds)) {
-                    $tasksWithreplyesIds[] = $id->task_id;
-                }
-            }
-
-            $tasks = $tasks->andWhere(['not in','id', $tasksWithreplyesIds]);
+            $tasks = $tasks->join('LEFT JOIN', 'reply', 'reply.task_id = task.id')->where('reply.task_id is NULL');
         }
 
         if ($this->taskCategories) {
@@ -111,5 +99,41 @@ class FilterTasksForm extends Model
             self::PERIOD_MONTH => self::PERIOD_MONTH_LABEL,
             self::PERIOD_YEAR  => self::PERIOD_YEAR_LABEL
         ];
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerDay($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= CURDATE()');
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerWeek($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)');
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerMonth($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)');
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerYear($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 YEAR)');
     }
 }
