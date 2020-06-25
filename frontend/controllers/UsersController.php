@@ -3,7 +3,8 @@
 namespace frontend\controllers;
 
 use app\models\User;
-use frontend\models\Users;
+use app\models\FilterUsersForm;
+use Yii;
 use yii\web\Controller;
 
 class UsersController extends Controller
@@ -15,8 +16,17 @@ class UsersController extends Controller
      */
     public function actionIndex()
     {
-        $users = User::find()->orderBy([ 'created_at'=> SORT_DESC ])->all();
+        $form = new FilterUsersForm();
+        $users = User::find();
 
-        return $this->render('index', ['users' => $users]);
+        if ($form->load(Yii::$app->request->post())) {
+
+            $users = $form->getFilteredUsers($users);
+
+        }
+
+        $users = $users->orderBy([ 'created_at'=> SORT_DESC ])->all();
+
+        return $this->render('index', ['users' => $users, 'filterUsersForm' => $form]);
     }
 }

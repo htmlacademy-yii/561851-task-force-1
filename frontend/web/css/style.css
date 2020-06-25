@@ -560,10 +560,13 @@ footer {
       -ms-flex-direction: column;
           flex-direction: column;
   margin: 0;
-  margin-bottom: 19px;
+  margin-bottom: 4px;
   padding: 0;
   border: none; }
-
+.search-task__categories .control-label,
+.search-task__form .control-label {
+  display: none;
+}
 .search-task__categories legend {
   font-weight: 700;
   font-size: 20px;
@@ -617,11 +620,12 @@ footer {
     color: #FF116E; }
 
 .input-middle {
+  width: 100%;
   padding-top: 14px;
   padding-bottom: 14px;
   padding-right: 16px;
   padding-left: 16px;
-  margin-bottom: 35px; }
+  margin-bottom: 5px; }
 
 .multiple-select {
   padding-top: 14px;

@@ -1,0 +1,139 @@
+<?php
+
+namespace app\models;
+
+use yii\base\Model;
+use app\models\Task;
+use app\models\Category;
+use yii\helpers\ArrayHelper;
+use yii\helpers\VarDumper;
+use app\models\Reply;
+
+class FilterTasksForm extends Model
+{
+    public $taskCategories;
+    public $additionalParamRemoteJob;
+    public $additionalParamWithoutReply;
+    public $period;
+    public $searchByName;
+
+    const PERIOD_DAY = 'day';
+    const PERIOD_WEEK = 'week';
+    const PERIOD_MONTH = 'month';
+    const PERIOD_YEAR = 'year';
+    const PERIOD_DAY_LABEL = 'За день';
+    const PERIOD_WEEK_LABEL = 'За неделю';
+    const PERIOD_MONTH_LABEL = 'За месяц';
+    const PERIOD_YEAR_LABEL = 'За год';
+    const MIN_USER_NAME_LENGTH = 0;
+    const MAX_USER_NAME_LENGTH = 24;
+
+
+    public function getFilteredTasks($tasks) : object
+    {
+        if ($this->searchByName) {
+            $tasks = $tasks->where(['like', 'name', $this->searchByName]);
+        }
+
+        if ($this->period) {
+            switch ($this->period) {
+                case 'day' : $tasks = $this->tasksPerDay($tasks);
+                    break;
+                case 'week' : $tasks = $this->tasksPerWeek($tasks);
+                    break;
+                case 'month' : $tasks = $this->tasksPerMonth($tasks);
+                    break;
+                case 'year' : $tasks = $this->tasksPerYear($tasks);
+                    break;
+            }
+        }
+
+        if ($this->additionalParamRemoteJob) {
+            $tasks = $tasks->andWhere(['lat' => null, 'lng' => null]);
+        }
+
+        if ($this->additionalParamWithoutReply) {
+            $tasks = $tasks->join('LEFT JOIN', 'reply', 'reply.task_id = task.id')->where('reply.task_id is NULL');
+        }
+
+        if ($this->taskCategories) {
+            $tasks = $tasks->andWhere(['category_id' => $this->taskCategories]);
+        }
+
+        return $tasks;
+    }
+
+    public function rules()
+    {
+        return [
+            [
+                'taskCategories',
+                'exist',
+                'targetClass' => app\models\Category::class
+            ],
+            [
+                'additionalParamRemoteJob',
+                'boolean'
+            ],
+            [
+                'additionalParamWithoutReply',
+                'boolean'
+            ],
+            [
+                'period',
+                'date'
+            ],
+            [
+                'searchByName',
+                'string',
+                'length' => [self::MIN_USER_NAME_LENGTH, self::MAX_USER_NAME_LENGTH]
+            ]
+        ];
+    }
+
+    public function getPeriods()
+    {
+        return [
+            self::PERIOD_DAY   => self::PERIOD_DAY_LABEL,
+            self::PERIOD_WEEK  => self::PERIOD_WEEK_LABEL,
+            self::PERIOD_MONTH => self::PERIOD_MONTH_LABEL,
+            self::PERIOD_YEAR  => self::PERIOD_YEAR_LABEL
+        ];
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerDay($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= CURDATE()');
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerWeek($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 7 DAY)');
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerMonth($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 MONTH)');
+    }
+
+    /**
+     * @param $tasks
+     * @return object
+     */
+    private function tasksPerYear($tasks) : object
+    {
+        return $tasks->andWhere('created_at >= DATE_SUB(CURRENT_DATE, INTERVAL 1 YEAR)');
+    }
+}
